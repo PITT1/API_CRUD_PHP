@@ -67,8 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
             echo json_encode(["message" => "no se encontro un usuario con el id especificado"]);
         }
     }
-} else {
-    echo json_encode(["error" => "Error al intentar eliminar al usuario: " . $stmt->error]);
 }
+
 $conn->close();
 ?>
