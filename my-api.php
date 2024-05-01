@@ -6,7 +6,7 @@ $db_name = "mysql-practica";
 
 $conn = new mysqli($servername, $username, $password, $db_name);
 
-if ($conn -> connect_error) {
+if ($conn->connect_error) {
     die("connection failed: " . $conn->connect_error);
 }
 
