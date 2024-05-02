@@ -39,12 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correo   = $data['correo'];
     $sexo     = $data['sexo'];
 
-    $sql = "INSERT INTO usuarios (nombre, apellido, edad, correo, sexo) VALUES ('$nombre', '$apellido', $edad, '$correo', '$sexo')";
+    $sql = "INSERT INTO usuarios (nombre, apellido, edad, correo, sexo) VALUES (?,?,?,?,?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssiss", $nombre, $apellido, $edad, $correo, $sexo);
 
-    if ($conn->query($sql) === TRUE) {
-        echo json_encode(["message" => "Nuevo registro creado exitosamente"]);
-    } else {
-        echo json_encode(["error" => "Error: " . $sql . "<br>" . $conn->error]);
+    if($stmt->execute()) {
+        echo json_encode(["message" => "usuario $nombre $apellido registrado exitosamente"]);
     }
 }
 
