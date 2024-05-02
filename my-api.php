@@ -45,6 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if($stmt->execute()) {
         echo json_encode(["message" => "usuario $nombre $apellido registrado exitosamente"]);
+    } else {
+        $error = $stmt->error;
+        if (strpos($error, 'Duplicate entry') !== false) {
+            echo json_encode(["message" => "el correo de $nombre $apellido ya se encuentra en la base de datos"]);
+        } else {
+            echo json_encode(["message" => "Error al registrar usuario: " . $error]);
+        }
     }
 }
 
