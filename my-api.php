@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 #----------- al hacer GET ------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
-    $sql = "SELECT id, nombre, apellido, nombre de usuario, edad, correo, sexo, contraseña FROM usuarios";
+    $sql = "SELECT id, nombre, apellido, username, edad, correo, sexo, contraseña FROM usuarios";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -35,13 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $nombre   = $data['nombre'];
     $apellido = $data['apellido'];
-    $userName = $data['nombre de usuario'];
+    $userName = $data['username'];
     $edad     = $data['edad'];
     $correo   = $data['correo'];
     $sexo     = $data['sexo'];
     $contraseña = $data['contraseña'];
 
-    $sql = "INSERT INTO usuarios (nombre, apellido, nombre de usuario, edad, correo, sexo, contraseña) VALUES (?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO usuarios (nombre, apellido, username, edad, correo, sexo, contraseña) VALUES (?,?,?,?,?,?,?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssisss", $nombre, $apellido, $userName, $edad, $correo, $sexo, $contraseña);
 
