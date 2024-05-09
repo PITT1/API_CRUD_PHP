@@ -16,21 +16,31 @@ if ($conn->connect_error) {
 
 #----------- al hacer GET ------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $data = json_decode(file_get_contents('php://input'), true);
 
-    $sql = "SELECT id, nombre, apellido, username, edad, correo, sexo, contraseña FROM usuarios";
-    $result = $conn->query($sql);
+    $username = $data['username'];
+    $contraseña = $data['contraseña'];
+
+    $sql = "SELECT contraseña FROM usuarios WHERE username =?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $username);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $usuarios = array();
-        
-        while($row = $result->fetch_assoc()) {
-            $usuarios[] = $row;
+        $contraseñaAlmacenada = $result->fetch_assoc()['contraseña'];
+
+        if ($contraseña === $contraseñaAlmacenada) {
+            echo json_encode(["message" => "el usuario está registrado y la contraseña es correcta"]);
+        } else {
+            echo json_encode(["message" => "el usuario está registrado pero la contraseña es incorrecta"]);
         }
-        echo json_encode(["usuarios" => $usuarios]);
     } else {
-        echo json_encode(["message" => "No se encontraron usuarios"]);
+        echo json_encode(["message" => "usuario no registrado"]);
     }
-}
+    $stmt->close();
+} 
 
 #----------- al hacer POST ---------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
