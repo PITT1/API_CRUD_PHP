@@ -14,8 +14,8 @@ if ($conn->connect_error) {
     die("connection failed: " . $conn->connect_error);
 }
 
-#----------- al hacer PUT ------------------------------------
-if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+#----------- al hacer PUT ------------------------------------ ESTO ESTA MAL HECHO Y HAY QUE ARREGLARLO
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {           #-------- LO HAGO ASI POR MOTIVOS DE PRUEBA. TIENE QUE HAVER UN POST EN VEZ DE PUT
     $data = json_decode(file_get_contents('php://input'), true);
 
     $username = $data['username'];
