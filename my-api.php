@@ -93,8 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/user/') === 0) {
-    $username = substr($_SERVER['REQUEST_URI'], 6);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $usernameURL = substr($_SERVER['REQUEST_URI'], 6);
+
+    $username = basename(str_replace('/my-api.php/user/', '', $usernameURL));
 
     $sql = "SELECT * FROM usuarios WHERE username =?";
     $stmt = $conn->prepare($sql);
