@@ -93,6 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     }
 }
 
+#--------------- AL HACER GET CON URL /user/{username}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/user/')!== false) {
     $username = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '/user/') + 6);
 
