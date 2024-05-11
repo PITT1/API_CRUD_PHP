@@ -14,6 +14,7 @@ if ($conn->connect_error) {
     die("connection failed: " . $conn->connect_error);
 }
 
+
 #----------- al hacer POST con action = signin -----------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'signin') {           
     $data = json_decode(file_get_contents('php://input'), true);
@@ -92,24 +93,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/user/' === 0)) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/user/') === 0) {
     $username = substr($_SERVER['REQUEST_URI'], 6);
-    
+
     $sql = "SELECT * FROM usuarios WHERE username =?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $username);
 
     $stmt->execute();
-
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
+        $user = $result->fetch_assoc(); 
         echo json_encode($user);
     } else {
         echo json_encode(["message" => "usuario no encontrado"]);
     }
+    $stmt->close();
 }
+
 
 $conn->close();
 ?>
