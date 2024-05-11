@@ -32,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'signin') {
         $contraseñaAlmacenada = $result->fetch_assoc()['contraseña'];
 
         if ($contraseña === $contraseñaAlmacenada) {
-            echo json_encode(["message" => "el usuario está registrado y la contraseña es correcta"]);
+            echo json_encode(["message" => "ok"]);
         } else {
-            echo json_encode(["message" => "el usuario está registrado pero la contraseña es incorrecta"]);
+            echo json_encode(["message" => "el usuario ". $username." está registrado pero la contraseña es incorrecta"]);
         }
     } else {
         echo json_encode(["message" => "usuario no registrado"]);
