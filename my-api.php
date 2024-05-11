@@ -93,10 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $usernameURL = substr($_SERVER['REQUEST_URI'], 6);
-
-    $username = basename(str_replace('/my-api.php/user/', '', $usernameURL));
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/user/')!== false) {
+    $username = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '/user/') + 6);
 
     $sql = "SELECT * FROM usuarios WHERE username =?";
     $stmt = $conn->prepare($sql);
@@ -107,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc(); 
-        echo json_encode($user);
+        echo json_encode($user); 
     } else {
         echo json_encode(["message" => "usuario no encontrado"]);
     }
