@@ -92,5 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/user/' === 0)) {
+    $username = substr($_SERVER['REQUEST_URI'], 6); 
+}
+
 $conn->close();
 ?>
