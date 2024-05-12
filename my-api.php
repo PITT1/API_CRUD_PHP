@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'register') {
     $stmt->bind_param("sssisss", $nombre, $apellido, $userName, $edad, $correo, $sexo, $contraseña);
 
     if($stmt->execute()) {
-        echo json_encode(["message" => "usuario $nombre $apellido registrado exitosamente"]);
+        echo json_encode(["message" => "usuario $userName registrado exitosamente"]);
     } else {
         $error = $stmt->error;
         if (strpos($error, 'Duplicate entry') !== false) {
