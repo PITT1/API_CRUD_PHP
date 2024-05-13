@@ -114,6 +114,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/us
     $stmt->close();
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/todos/')!== false) {
+    $username = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '/todos/') + 7);
+
+    $sql = "SELECT contenido FROM porhacer WHERE username = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $todosList = $result->fetch_all();
+        echo json_encode($todosList); 
+    } else {
+        echo json_encode(["message" => "no hay tareas"]);
+    }
+    
+}
+
 
 $conn->close();
 ?>
