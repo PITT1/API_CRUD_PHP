@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/to
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $todosList = $result->fetch_all();
+        $todosList = $result->fetch_all(MYSQLI_ASSOC);
         echo json_encode($todosList); 
     } else {
         echo json_encode(["message" => "no hay tareas"]);
