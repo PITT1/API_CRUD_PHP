@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/to
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'addtodo') {
-    $data = json_decode(file_get_contents('php://input'), false);
+    $data = json_decode(file_get_contents('php://input'), true);
     $user = $_GET['user'];
     $TODO = $data['todo'];
 
