@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'signin') {
     if ($result->num_rows > 0) {
         $contraseñaAlmacenada = $result->fetch_assoc()['contraseña'];
 
-        if ($contraseña === $contraseñaAlmacenada) {
+        if (password_verify($contraseña, $contraseñaAlmacenada)) {
             echo json_encode(["message" => "ok"]);
         } else {
             echo json_encode(["message" => "el usuario ". $username." está registrado pero la contraseña es incorrecta"]);
@@ -56,9 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'register') {
     $sexo     = $data['sexo'];
     $contraseña = $data['contraseña'];
 
+    $passwordHash = password_hash($contraseña, PASSWORD_BCRYPT);
+
     $sql = "INSERT INTO usuarios (nombre, apellido, username, edad, correo, sexo, contraseña) VALUES (?,?,?,?,?,?,?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssisss", $nombre, $apellido, $userName, $edad, $correo, $sexo, $contraseña);
+    $stmt->bind_param("sssisss", $nombre, $apellido, $userName, $edad, $correo, $sexo, $passwordHash);
 
     if($stmt->execute()) {
         echo json_encode(["message" => "usuario $userName registrado exitosamente"]);
@@ -98,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/user/')!== false) {
     $username = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '/user/') + 6);
 
-    $sql = "SELECT * FROM usuarios WHERE username =?";
+    $sql = "SELECT nombre, apellido, username FROM usuarios WHERE username =?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $username);
 
