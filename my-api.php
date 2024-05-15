@@ -131,9 +131,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/to
     } else {
         echo json_encode(["message" => "no hay tareas"]);
     }
-    
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'addtodo') {
+    $data = json_decode(file_get_contents('php://input'), false);
+    $user = $_GET['user'];
+    $TODO = $data['todo'];
+
+    $sql = "INSERT INTO porhacer(username, contenido) VALUES(?,?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $user, $TODO);
+    if($stmt->execute()){
+        echo json_encode(["message" => "tarea guardada con exito"]);
+    } else {
+        echo json_encode(['message' => 'Error al guardar la tarea', 'error' => $stmt->error]);
+    }
+}
 
 $conn->close();
 ?>
