@@ -148,8 +148,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'addtodo') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $_GET['action'] === 'deletetodo') {
-    
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'deletetodo') { //de momento no quiere funcionar con el metodo DELETE, mientras tanto uso POST
+    $username = $_GET['user'];
+    $keyIndex = $_GET['key'];
+
+    if ($keyIndex === 1) {
+        $sql = "SELECT * FROM porhacer WHERE username = ? ORDER BY id LIMIT 1";
+    } else {
+        $sql = "SELECT * FROM porhacer WHERE username = ? ORDER BY id LIMIT 1 OFFSET ?";
+    }
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $username, $keyIndex);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $idResult = $result->fetch_assoc()['id'];
+
+    $sql = "DELETE FROM porhacer WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $idResult);
+    if($stmt->execute()){
+        echo json_encode(["message" => "tarea eliminada con exito"]);
+    } else {
+        echo json_encode(["message" => "error al eliminar la tarea"]);
+    }
 }
 
 $conn->close();
