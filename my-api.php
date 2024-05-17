@@ -148,5 +148,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'addtodo') {
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $_GET['action'] === 'deletetodo') {
+    
+}
+
 $conn->close();
 ?>
