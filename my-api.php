@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/us
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/todos/')!== false) {
     $username = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '/todos/') + 7);
 
-    $sql = "SELECT contenido FROM porhacer WHERE username = ?";
+    $sql = "SELECT contenido, listo FROM porhacer WHERE username = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $username);
     $stmt->execute();
