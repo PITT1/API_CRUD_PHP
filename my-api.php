@@ -175,5 +175,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'deletetodo') {
     }
 }
 
+//------------------marcar tareas como finalizadas-----------
+if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_POST['action']) && $_POST['action'] === 'putlisto') {
+    $index = $_POST['taskindex'];
+    $user = $_POST['user'];
+
+    if ($index === 1) {
+        $sql = "SELECT id, listo FROM porhacer WHERE username =? ORDER BY id LIMIT 1";
+    } else {
+        $sql = "SELECT id, listo FROM porhacer WHERE username =? ORDER BY id LIMIT 1 OFFSET?";
+    }
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die('Error preparando la declaración: '. $conn->error);
+    }
+
+    $stmt->bind_param("si", $user, $index);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $idResult = $row['id'];
+        $listo = $row['listo'];
+
+        if ($listo === "falso") {
+            $sqlUpdate = "UPDATE porhacer SET listo = 'hecho' WHERE id =?";
+        } elseif ($listo === "hecho") {
+            $sqlUpdate = "UPDATE porhacer SET listo = 'falso' WHERE id =?";
+        }
+
+        $stmtUpdate = $conn->prepare($sqlUpdate);
+        if (!$stmtUpdate) {
+            die('Error preparando la declaración de actualización: '. $conn->error);
+        }
+
+        $stmtUpdate->bind_param("i", $idResult);
+        if ($stmtUpdate->execute()) {
+            echo json_encode(["message" => "ok"]);
+        } else {
+            echo json_encode(["message" => "error al cambiar columna listo"]);
+        }
+    } else {
+        echo json_encode(["message" => "No se encontró ningún registro para el usuario especificado."]);
+    }
+}
+
 $conn->close();
 ?>
