@@ -176,9 +176,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'deletetodo') {
 }
 
 //------------------marcar tareas como finalizadas-----------
-if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_POST['action']) && $_POST['action'] === 'putlisto') {
-    $index = $_POST['taskindex'];
-    $user = $_POST['user'];
+if ($_SERVER['REQUEST_METHOD'] === 'PUT' && $_GET['action'] === "putlisto") {
+    $index = $_GET['taskindex'];
+    $user = $_GET['user'];
 
     if ($index === 1) {
         $sql = "SELECT id, listo FROM porhacer WHERE username =? ORDER BY id LIMIT 1";
@@ -187,10 +187,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_POST['action']) && $_POST['a
     }
 
     $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        die('Error preparando la declaración: '. $conn->error);
-    }
-
     $stmt->bind_param("si", $user, $index);
     $stmt->execute();
 
@@ -201,21 +197,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_POST['action']) && $_POST['a
         $listo = $row['listo'];
 
         if ($listo === "falso") {
-            $sqlUpdate = "UPDATE porhacer SET listo = 'hecho' WHERE id =?";
-        } elseif ($listo === "hecho") {
-            $sqlUpdate = "UPDATE porhacer SET listo = 'falso' WHERE id =?";
-        }
-
-        $stmtUpdate = $conn->prepare($sqlUpdate);
-        if (!$stmtUpdate) {
-            die('Error preparando la declaración de actualización: '. $conn->error);
-        }
-
-        $stmtUpdate->bind_param("i", $idResult);
-        if ($stmtUpdate->execute()) {
-            echo json_encode(["message" => "ok"]);
+            $sql = "UPDATE porhacer SET listo = 'hecho' where id =?"; 
         } else {
-            echo json_encode(["message" => "error al cambiar columna listo"]);
+            $sql = "UPDATE porhacer SET listo = 'falso' where id =?";
+        }
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $idResult);
+        if ($stmt->execute()) {
+            echo json_encode(["message" => "fila alterada con exito"]);
+        } else {
+            echo json_encode(["message" => "error al alterar la fila"]);
         }
     } else {
         echo json_encode(["message" => "No se encontró ningún registro para el usuario especificado."]);
